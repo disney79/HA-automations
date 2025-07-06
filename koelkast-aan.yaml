@@ -1,0 +1,18 @@
+alias: Koelkast tuin aan voor t weekend
+description: ""
+triggers:
+  - trigger: time
+    at: "10:00:00"
+conditions:
+  - condition: time
+    weekday:
+      - fri
+  - condition: state
+    entity_id: input_boolean.koelkast_tuin_gevuld
+    state: "on"
+actions:
+  - type: turn_on
+    device_id: 5b38e36ea4c95364e0457dfce4fa0e5c
+    entity_id: 7c32e55c8febfc9d530f9c2dba230c64
+    domain: switch
+mode: single
