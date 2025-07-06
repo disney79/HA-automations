@@ -1,0 +1,41 @@
+alias: koelkast tuin
+description: ""
+triggers:
+  - trigger: tag
+    tag_id: a6edac29-c53f-4fc1-a5f4-91689e99c31d
+    id: koelkast leeg
+  - trigger: tag
+    tag_id: 61e300b5-641e-4812-877d-6e5b37cc0692
+    id: koelkast vol
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - koelkast leeg
+        sequence:
+          - type: turn_off
+            device_id: 5b38e36ea4c95364e0457dfce4fa0e5c
+            entity_id: 7c32e55c8febfc9d530f9c2dba230c64
+            domain: switch
+          - action: input_boolean.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: input_boolean.koelkast_tuin_gevuld
+      - conditions:
+          - condition: trigger
+            id:
+              - koelkast vol
+        sequence:
+          - type: turn_on
+            device_id: 5b38e36ea4c95364e0457dfce4fa0e5c
+            entity_id: 7c32e55c8febfc9d530f9c2dba230c64
+            domain: switch
+          - action: input_boolean.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: input_boolean.koelkast_tuin_gevuld
+mode: single
