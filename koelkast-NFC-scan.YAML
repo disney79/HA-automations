@@ -2,10 +2,10 @@ alias: koelkast tuin
 description: ""
 triggers:
   - trigger: tag
-    tag_id: a6edac29-c53f-4fc1-a5f4-91689e99c31d
+    tag_id: a6edac29-c53f-4fc1-a5f4-916sc31d
     id: koelkast leeg
   - trigger: tag
-    tag_id: 61e300b5-641e-4812-877d-6e5b37cc0692
+    tag_id: 61e300b5-641e-4812-877d-scc0692
     id: koelkast vol
 conditions: []
 actions:
