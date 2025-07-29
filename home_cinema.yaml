@@ -1,0 +1,202 @@
+alias: Apple TV
+description: ""
+triggers:
+  - trigger: state
+    entity_id:
+      - media_player.lg_webos_smart_tv
+    attribute: source
+    id: TV source wijziging
+    enabled: true
+  - device_id: 9436b4ea94b99131611a534aacaaadc0
+    domain: media_player
+    entity_id: ff60476a32708a9bad26632d04fe545d
+    type: playing
+    trigger: device
+    id: Apple TV Playing
+  - device_id: 9436b4ea94b99131611a534aacaaadc0
+    domain: media_player
+    entity_id: ff60476a32708a9bad26632d04fe545d
+    type: paused
+    trigger: device
+    id: Apple TV Pause
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - TV source wijziging
+        sequence:
+          - if:
+              - condition: device
+                device_id: aecf1bdc91b546f7088eb6ff9ac40a88
+                domain: media_player
+                entity_id: 890749c9ee1e665043e3df31c87f7460
+                type: is_off
+            then:
+              - action: notify.mobile_app_s22_denie
+                metadata: {}
+                data:
+                  message: tv is uit
+              - action: scene.turn_on
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: scene.temp_test_scene
+              - action: media_player.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id:
+                    - media_player.thuisbioscoop
+                    - media_player.denon_avr_4520
+              - action: media_player.volume_mute
+                metadata: {}
+                data:
+                  is_volume_muted: true
+                target:
+                  device_id: bbe8607ac02cf1d71654e3db977f65f9
+              - action: input_boolean.turn_off
+                metadata: {}
+                data: {}
+                target:
+                  entity_id: input_boolean.tvstaataan
+            else:
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.tvstaataan
+                    state: "off"
+                then:
+                  - action: input_boolean.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: input_boolean.tvstaataan
+                  - action: notify.mobile_app_s22_denie
+                    metadata: {}
+                    data:
+                      message: TV gaat aan
+                  - action: scene.create
+                    metadata: {}
+                    data:
+                      scene_id: temp_test_scene
+                      snapshot_entities:
+                        - light.achterkamer
+                        - light.kaplamp
+                        - light.dimmerpiano
+                        - light.zoutlamp
+                        - light.shelly_golden
+                        - light.vloerlamp
+                        - light.wled
+                        - light.ledstriptvkast
+                        - light.muurgroen
+                        - light.muurpaars
+                        - cover.gordijn_links
+                        - cover.gordijn_rechts
+              - if:
+                  - condition: state
+                    entity_id: media_player.lg_webos_smart_tv
+                    state: HDMI 3
+                    attribute: source
+                then:
+                  - action: notify.mobile_app_s22_denie
+                    metadata: {}
+                    data:
+                      message: tv aan op HDMI 3
+                  - action: media_player.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: media_player.thuisbioscoop
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 3
+                      milliseconds: 0
+                  - action: script.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: script.tv_audio_via_denon_surround
+                else:
+                  - action: notify.mobile_app_s22_denie
+                    metadata: {}
+                    data:
+                      message: tv aan, gewoon kanaal
+                  - action: script.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: script.tv_audio_only
+                  - action: scene.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: scene.relax_living
+                  - action: media_player.turn_off
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: media_player.thuisbioscoop
+                    enabled: false
+                  - delay:
+                      hours: 0
+                      minutes: 0
+                      seconds: 3
+                      milliseconds: 0
+                  - action: script.turn_on
+                    metadata: {}
+                    data: {}
+                    target:
+                      entity_id: script.tv_audio_only
+      - conditions:
+          - condition: trigger
+            id:
+              - Apple TV Pause
+        sequence:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+            enabled: false
+          - type: turn_on
+            device_id: 24f9d8f8b853c6a0772b5371bfba3d90
+            entity_id: dbaea7fb8991c88f830fa57381e713c9
+            domain: light
+          - type: turn_on
+            device_id: d748010515a18ff6ea133fb4bf02f661
+            entity_id: a98615354b3716ca00a40efd21818ae5
+            domain: light
+          - action: light.turn_on
+            metadata: {}
+            data:
+              rgb_color:
+                - 255
+                - 147
+                - 0
+            target:
+              device_id:
+                - af7844f5cbfc1ecda98f80656c638c0d
+                - de602bbe957fca9d62debc70773b4b68
+      - conditions:
+          - condition: trigger
+            id:
+              - Apple TV Playing
+        sequence:
+          - action: light.turn_off
+            metadata: {}
+            data: {}
+            target:
+              area_id: living_room
+              entity_id:
+                - light.dimmerpiano
+                - light.achterkamer
+                - light.shelly_golden
+                - light.wled
+                - light.zoutlamp
+            enabled: true
+          - action: scene.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: scene.tv_mode
+mode: single
