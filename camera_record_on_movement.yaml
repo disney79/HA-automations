@@ -1,0 +1,18 @@
+alias: Annke recording
+description: ""
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.beweginggang_occupancy
+    to: "on"
+conditions: []
+actions:
+  - action: camera.record
+    metadata: {}
+    data:
+      duration: 30
+      lookback: 0
+      filename: /config/www/annke/recording.mp4
+    target:
+      device_id: 6b8a3ecf80bf2a8a52a234c958dc9f90
+mode: single
